@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "name": "Dumbo",
+    "species": "Elephant",
+    "status": "open",
+    "health": "Healthy"
+  },
+  {
+    "id": 2,
+    "name": "Luna",
+    "species": "Panda",
+    "status": "closed",
+    "health": "Healthy"
+  },
+  {
+    "id": 3,
+    "name": "Stripes",
+    "species": "Tiger",
+    "status": "open",
+    "health": "Healthy"
+  }
+]
