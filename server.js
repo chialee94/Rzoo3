@@ -10,15 +10,19 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// Serve React build files
+// ----------------------
+// Serve React build
+// ----------------------
 app.use(express.static(path.join(__dirname, "client/build")));
 
+// ----------------------
 // Animals JSON file
+// ----------------------
 const animalsFile = path.join(__dirname, "animals.json");
 
-// Load animals
 let animals = [];
 
+// Load animals from file
 const loadAnimals = async () => {
   try {
     const data = await fs.readFile(animalsFile, "utf-8");
@@ -31,20 +35,24 @@ const loadAnimals = async () => {
 
 loadAnimals();
 
+// ----------------------
+// API ROUTES
+// ----------------------
+
 // GET all animals
 app.get("/api/animals", (req, res) => {
   res.json(animals);
 });
 
-// GET one animal by ID
+// GET animal by ID
 app.get("/api/animals/:id", (req, res) => {
   const animal = animals.find((a) => a.id == req.params.id);
 
-  if (animal) {
-    res.json(animal);
-  } else {
-    res.status(404).json({ error: "Animal not found" });
+  if (!animal) {
+    return res.status(404).json({ error: "Animal not found" });
   }
+
+  res.json(animal);
 });
 
 // POST new animal
@@ -58,9 +66,7 @@ app.post("/api/animals", async (req, res) => {
   }
 
   const newAnimal = {
-    id: animals.length
-      ? animals[animals.length - 1].id + 1
-      : 1,
+    id: animals.length ? animals[animals.length - 1].id + 1 : 1,
     name,
     species,
     status: status || "open",
@@ -85,14 +91,19 @@ app.post("/api/animals", async (req, res) => {
   }
 });
 
-// React frontend route
-app.get("*", (req, res) => {
+// ----------------------
+// React catch-all route (FIXED)
+// ----------------------
+// This replaces app.get("*") which breaks in newer Express versions
+app.get(/.*/, (req, res) => {
   res.sendFile(
     path.join(__dirname, "client/build", "index.html")
   );
 });
 
+// ----------------------
 // Start server
+// ----------------------
 app.listen(PORT, () => {
   console.log(`Zoo API running at http://localhost:${PORT}`);
 });
